@@ -32,6 +32,7 @@ export default function BackgroundMesh() {
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-[5] overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(255,220,250,0.5),transparent_62%)]" />
       <div
         ref={blobA}
         className="absolute left-1/5 top-1/4 h-[36rem] w-[36rem] rounded-full bg-[#7c3aed] opacity-[0.55] blur-[220px]"

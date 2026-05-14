@@ -12,12 +12,12 @@ export default function CustomCursor() {
       return;
     }
 
-    const xTo = gsap.quickTo(cursor, "x", { duration: 0.2, ease: "power3" });
-    const yTo = gsap.quickTo(cursor, "y", { duration: 0.2, ease: "power3" });
+    const position = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const target = { x: position.x, y: position.y };
 
     const handleMove = (event: MouseEvent) => {
-      xTo(event.clientX - cursor.offsetWidth / 2);
-      yTo(event.clientY - cursor.offsetHeight / 2);
+      target.x = event.clientX - cursor.offsetWidth / 2;
+      target.y = event.clientY - cursor.offsetHeight / 2;
     };
 
     const handleEnter = () => {
@@ -30,6 +30,14 @@ export default function CustomCursor() {
 
     window.addEventListener("mousemove", handleMove);
 
+    const tick = () => {
+      position.x = gsap.utils.interpolate(position.x, target.x, 0.2);
+      position.y = gsap.utils.interpolate(position.y, target.y, 0.2);
+      gsap.set(cursor, { x: position.x, y: position.y });
+    };
+
+    gsap.ticker.add(tick);
+
     const hoverTargets = document.querySelectorAll("a, button, [data-cursor='link']");
     hoverTargets.forEach((target) => {
       target.addEventListener("mouseenter", handleEnter);
@@ -38,6 +46,7 @@ export default function CustomCursor() {
 
     return () => {
       window.removeEventListener("mousemove", handleMove);
+      gsap.ticker.remove(tick);
       hoverTargets.forEach((target) => {
         target.removeEventListener("mouseenter", handleEnter);
         target.removeEventListener("mouseleave", handleLeave);
@@ -48,7 +57,7 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
-      className="pointer-events-none fixed left-0 top-0 z-50 hidden h-4 w-4 rounded-full border border-white/60 md:block"
+      className="pointer-events-none fixed left-0 top-0 z-50 hidden h-4 w-4 rounded-full border border-white/60 mix-blend-screen md:block"
     />
   );
 }
